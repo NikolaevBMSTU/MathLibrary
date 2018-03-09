@@ -1,9 +1,5 @@
 using System;
 
-
-//Compiler version 4.0, .NET Framework 4.5
-
-
 namespace SMAN
 // Some methods of analysis
 // Ќекоторые методы математического анализа
@@ -25,7 +21,7 @@ namespace SMAN
             double dx;
 
             y[0] = y0;
-            //y[0] = y0;
+            y2n[0] = y0;
 
             bool end = false;
             while (!end)
@@ -38,6 +34,7 @@ namespace SMAN
                     y[i] = y[i - 1] + dx * D(a + dx * i, y[i - 1]);
                 }
 
+                n2 = n * 2;
                 dx = (b - a) / n2;
                 for (int i = 1; i <= n2; i++)
                 {
