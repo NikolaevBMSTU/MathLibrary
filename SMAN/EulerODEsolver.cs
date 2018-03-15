@@ -1,57 +1,68 @@
 using System;
 
-namespace SMAN
-// Some methods of analysis
-// Некоторые методы математического анализа
-{
 
-    public class ODE
-    {
-        public delegate double FunkXY(double x, double y);
+ //Compiler version 4.0, .NET Framework 4.5
+// РµСЃС‚СЊ Р»РёС€РЅРµРµ РїРѕРІС‚РѕСЂРµРЅРёРµ, РєРѕРіРґР° С‚СЂРµР±СѓРµС‚СЃСЏ СѓРґРІРѕРёС‚СЊ С€Р°Рі
 
-        public static double[] EulerODEsolve(double y0, double a, double b, FunkXY D)
-        // Method of Euler
-        {
-            int n = 5;
-            int n2 = n * 2;
-
-            double[] y = new double[n];
-            double[] y2n = new double[n2];
-            double dy = 1;
-            double dx;
-
-            y[0] = y0;
-            y2n[0] = y0;
-
-            bool end = false;
-            while (!end)
-            {
-                n = n * 2;
-                dx = (b - a) / n;
-                y = new double[n];
-                for (int i = 1; i <= n; i++)
-                {
-                    y[i] = y[i - 1] + dx * D(a + dx * i, y[i - 1]);
-                }
-
-                n2 = n * 2;
-                dx = (b - a) / n2;
-                for (int i = 1; i <= n2; i++)
-                {
-                    y2n[i] = y2n[i - 1] + dx * D(a + dx * i, y2n[i - 1]);
-                }
-
-                end = true;
-                for (int i = 0; i <= n; i++)
-                {
-                    //end = end * (Math.Abs(y[i] - y2n[2 * i]) / 2 < 1e-4);
-                }
-            }
-
-            return y2n;
-        }
-    }
-
-
-}
+ namespace SMAN
+ {
+ 	
+ 	public class ODE
+ 	{
+ 		public delegate double FunkXY(double x, double y);
+ 		
+ 		public static double[] Euler(double y0, double a, double b, int p, FunkXY D)
+ 		// Method of Euler
+ 		{
+ 			int n = (p-1)/2+1;
+ 			int n2 = 2*(n-1)+1 ;
+ 
+ 			double[] y;
+ 			double[] y2n = new double[n2];
+ 			double dx;
+ 			int count = 1;
+ 			
+ 			bool end = false;
+ 			while (!end)
+ 			{
+ 				count += 1;
+ 				n = 2*(n-1)+1 ;
+ 				dx = (b - a) / (n);
+ 				y = new double[n];
+ 				y[0] = y0;
+ 				for (int i = 1; i < n; i++)
+ 				{
+ 					y[i] = y[i - 1] + dx * D(a + dx * i, y[i - 1]);
+ 				}
+ 				
+ 				n2 = 2*(n-1)+1;
+ 				dx = (b - a) / n2;
+ 				y2n = new double[n2];
+ 				y2n[0] = y0;
+ 				for (int i = 1; i < n2; i++)
+ 				{
+ 					y2n[i] = y2n[i - 1] + dx * D(a + dx * i, y2n[i - 1]);
+ 				}
+ 				
+ 				end = true;
+ 				for (int i = 0; i < n; i++)
+ 				{
+ 					end = end && (Math.Abs(y[i] - y2n[2 * i]) / 2 < 1e-4);
+ 				}
+ 			}
+ 			
+ 			int k = n2/p;
+ 			k = count;
+ 			double[] answer = new double[p];
+ 			for (int i = 1; i < p; i++)
+ 			{
+ 				answer[i] = y2n[k*(i)];
+ 			}
+ 			
+ 			return answer;
+ 		}
+ 	}
+ 	
+ }
+    
     

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMAN", "SMAN\SMAN.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMLA", "SMLA\SMLA.csproj", "{36D58429-70B0-4377-8BE2-A72F22650001}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D4630EFA-904A-4C2E-B1DB-7932653349FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{36D58429-70B0-4377-8BE2-A72F22650001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36D58429-70B0-4377-8BE2-A72F22650001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36D58429-70B0-4377-8BE2-A72F22650001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4630EFA-904A-4C2E-B1DB-7932653349FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4630EFA-904A-4C2E-B1DB-7932653349FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4630EFA-904A-4C2E-B1DB-7932653349FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4630EFA-904A-4C2E-B1DB-7932653349FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

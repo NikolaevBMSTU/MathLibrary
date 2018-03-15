@@ -203,9 +203,7 @@ namespace Matrixs
     }
 
     public class SquareMatrix : Matrix
-    {
-        public int GetN { get { return n; } }
-      
+    {      
         public SquareMatrix()
         {
             n = 0;
@@ -598,9 +596,9 @@ namespace SMLA
             return X[MaxIter - 1];
         }
 
-        public static Vector GMRES(SquareMatrix A, Vector F, Vector X0)
+        public static Vector BiCGStab(SquareMatrix A, Vector B, Vector X0)
         {
-            return new Vector();
+            return BiCGStab(A, B, X0, 100000, 1e-4);
         }
     }
 }
