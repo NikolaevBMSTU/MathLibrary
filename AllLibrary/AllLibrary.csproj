@@ -80,6 +80,10 @@
       <Project>{b7170047-0eff-4863-a31e-27e4f3ca7a3c}</Project>
       <Name>SMAN</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SMLA\SMLA.csproj">
+      <Project>{36d58429-70b0-4377-8be2-a72f22650001}</Project>
+      <Name>SMLA</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

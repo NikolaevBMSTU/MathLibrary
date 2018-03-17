@@ -115,33 +115,33 @@ namespace Matrixs
         public int GetN { get { return n; } }
         private int GetM { get { return m; } }
 
-        protected double[,] A;
+        protected double[,] ArrayElements;
 
-        public double[,] GetArray { get { return A; } }
+        public double[,] GetArray { get { return ArrayElements; } }
 
         public Matrix()
         {
             n = 0;
             m = 0;
-            A = new double[n, m];
+            ArrayElements = new double[n, m];
         }
 
         public Matrix(int N, int M)
         {
             n = N;
             m = M;
-            A = new double[n, m];
+            ArrayElements = new double[n, m];
         }
 
         public Matrix(double[,] array)
         {
             n = array.GetLength(0);
             m = array.GetLength(1);
-            A = new double[n, m];
+            ArrayElements = new double[n, m];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
                 {
-                    A[i, j] = array[i, j];
+                    ArrayElements[i, j] = array[i, j];
                 }
         }
 
@@ -156,7 +156,7 @@ namespace Matrixs
                 double[] B = new double[n];
                 for (int i = 0; i < n; i++)
                 {
-                    B[i] = A[i, Numer];
+                    B[i] = ArrayElements[i, Numer];
                 }
                 return new Vector(B);
             }
@@ -173,7 +173,7 @@ namespace Matrixs
                 double[] B = new double[m];
                 for (int i = 0; i < m; i++)
                 {
-                    B[i] = A[Numer, i];
+                    B[i] = ArrayElements[Numer, i];
                 }
                 return new Vector(B);
             }
@@ -207,25 +207,47 @@ namespace Matrixs
         public SquareMatrix()
         {
             n = 0;
-            A = new double[n, n];
+            ArrayElements = new double[n, n];
         }
 
         public SquareMatrix(int N)
         {
             n = N;
-            A = new double[n, n];
+            ArrayElements = new double[n, n];
         }
 
         public SquareMatrix(double[,] a)
         {
             n = a.GetLength(0);
             if (n != a.GetLength(1)) { throw new ArgumentException("Массив должен быть квадратным"); }
-            A = new double[n, n];
+            ArrayElements = new double[n, n];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
                 {
-                    A[i, j] = a[i, j];
+                    ArrayElements[i, j] = a[i, j];
                 }
+        }
+
+        public SquareMatrix(Vector[] Colums)
+        {
+            bool NotError = true;
+            for (int i = 0; i < Colums.GetLength(0); i++)
+            {
+                NotError = NotError && (Colums[i].GetLength == Colums[0].GetLength);
+            }
+            if (!NotError) { throw new ArgumentException("Векторы должны быть одной длины"); }
+
+            if (Colums.GetLength(0) != Colums[0].GetLength) { throw new ArgumentException("Количество векторов не соответствует их длине"); }
+
+            n = Colums[0].GetLength;
+            ArrayElements = new double[n, n];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    ArrayElements[j, i] = Colums[i].GetVector[j];
+                }
+            }
         }
 
         public Vector GetColumn(int Numer)
@@ -239,7 +261,7 @@ namespace Matrixs
                 double[] B = new double[n];
                 for (int i = 0; i < n; i++)
                 {
-                    B[i] = A[i, Numer];
+                    B[i] = ArrayElements[i, Numer];
                 }
                 return new Vector(B);
             }
@@ -256,7 +278,7 @@ namespace Matrixs
                 double[] B = new double[n];
                 for (int i = 0; i < n; i++)
                 {
-                    B[i] = A[Numer, i];
+                    B[i] = ArrayElements[Numer, i];
                 }
                 return new Vector(B);
             }
@@ -392,7 +414,7 @@ namespace Matrixs
             {
                 for (int j = 0; j < n; j++)
                 {
-                    B[i, j] = A[i, j];
+                    B[i, j] = ArrayElements[i, j];
                 }
             }
 
@@ -433,11 +455,11 @@ namespace Matrixs
 
         public void ILU(out SquareMatrix L, out SquareMatrix U, out SquareMatrix R)
         {
-            double[,] l = new double[A.GetLength(0), A.GetLength(1)];
-            double[,] u = new double[A.GetLength(0), A.GetLength(1)];
+            double[,] l = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
+            double[,] u = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
 
-            for (int i = 0; i < A.GetLength(0); i++)
-                for (int j = 0; j < A.GetLength(1); j++)
+            for (int i = 0; i < ArrayElements.GetLength(0); i++)
+                for (int j = 0; j < ArrayElements.GetLength(1); j++)
                 {
                     l[i, j] = 0/*A[i, j]*/;
                     u[i, j] = 0/*A[i, j]*/;
@@ -449,32 +471,32 @@ namespace Matrixs
             {
                 for (int j = 0; j < k - 1; j++)
                 {
-                    if (A[k, j] == 0) { l[k, j] = 0; }
+                    if (ArrayElements[k, j] == 0) { l[k, j] = 0; }
                     else
                     {
                         double summ = 0;
                         for (int i = 0; i < j - 1; i++)
                             summ += l[k, i] * u[i, j];
-                        l[k, j] = (A[k, j] - summ) / u[j, j];
+                        l[k, j] = (ArrayElements[k, j] - summ) / u[j, j];
                     }
                 }
                 l[k, k] = 1;
                 for (int j = k; j < n; j++)
                 {
-                    if (A[k, j] == 0) { u[k, j] = 0; }
+                    if (ArrayElements[k, j] == 0) { u[k, j] = 0; }
                     else
                     {
                         double summ = 0;
                         for (int i = 0; i < k - 1; i++)
                             summ += l[k, i] * u[i, j];
-                        u[k, j] = A[k, j] - summ;
+                        u[k, j] = ArrayElements[k, j] - summ;
                     }
                 }
             }
 
             L = new SquareMatrix(l);
             U = new SquareMatrix(u);
-            R = new SquareMatrix(A) - L * U;
+            R = new SquareMatrix(ArrayElements) - L * U;
         }
 
         public static double GetMaxEigenvalue(SquareMatrix A, double eps)
@@ -599,6 +621,20 @@ namespace SMLA
         public static Vector BiCGStab(SquareMatrix A, Vector B, Vector X0)
         {
             return BiCGStab(A, B, X0, 100000, 1e-4);
+        }
+
+        public static SquareMatrix InverseMatrixBiCGStab(SquareMatrix A)
+        {
+            SquareMatrix E = SquareMatrix.GetUnitMatrix(A.GetN);
+            Vector[] B = new Vector[A.GetN];
+
+            for (int i = 0; i < A.GetN; i++) 
+            {
+                B[i] = BiCGStab(A, E.GetColumn(i), E.GetColumn(i));
+            }
+
+            SquareMatrix IA = new SquareMatrix(B);
+            return IA;
         }
     }
 }

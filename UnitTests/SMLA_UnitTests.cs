@@ -421,5 +421,22 @@ namespace UnitTests
                 Assert.AreEqual(ExpectedX.GetVector[i], ActualX.GetVector[i], 0.01, "Solution not calculated correctly");
             }
         }
+
+        [TestMethod]
+        public void InverseMatrixBiCGStab_3x3()
+        {
+            double[,] A = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
+            SquareMatrix MatrixA = new SquareMatrix(A);
+            SquareMatrix Expected = SquareMatrix.GetUnitMatrix(MatrixA.GetN);
+            SquareMatrix Actual = MatrixA * SLEQ.InverseMatrixBiCGStab(MatrixA);
+
+            for (int i = 0; i < MatrixA.GetN; i++)
+            {
+                for (int j = 0; j < MatrixA.GetN; j++)
+                {
+                    Assert.AreEqual(Expected.GetArray[i, j], Actual.GetArray[i, j], 0.01, "Обратная матрица не вычисляется неверно");
+                }   
+            }
+        }
     }
 }
