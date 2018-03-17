@@ -23,6 +23,54 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void Euler_Wrong_AB()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.Euler(0, 0, -1, 10, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Неупорядоченый отрезок интегрирования не распознан");
+        }
+
+        [TestMethod]
+        public void Euler_Negativ_P()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.Euler(0, 0, 1, -10, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Отрицательное количество возвращаемых точек не распознано");
+        }
+
+        [TestMethod]
+        public void Euler_Small_P()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.Euler(0, 0, 1, 1, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Слишком малое количество возвращаемых точек не распознано");
+        }
+
+        [TestMethod]
         public void Euler_Exp()
         {
             double expected = 1.7183;
@@ -44,6 +92,54 @@ namespace UnitTests
             double expected = 0.5;
             double actual = ODE.Euler(0, 0, 1, 10, Line)[9];
             Assert.AreEqual(expected, actual, 0.001, "Решение найдено не верно");
+        }
+
+        [TestMethod]
+        public void ImplicitEuler_Wrong_AB()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.ImplicitEuler(0, 0, -1, 10, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Неупорядоченый отрезок интегрирования не распознан");
+        }
+
+        [TestMethod]
+        public void ImplicitEuler_Negativ_P()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.ImplicitEuler(0, 0, 1, -10, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Отрицательное количество возвращаемых точек не распознано");
+        }
+
+        [TestMethod]
+        public void ImplicitEuler_Small_P()
+        {
+            bool actual = false;
+            try
+            {
+                double y = ODE.ImplicitEuler(0, 0, 1, 1, Exp)[9];
+            }
+            catch
+            {
+                actual = true;
+            }
+
+            Assert.IsTrue(actual, "Слишком малое количество возвращаемых точек не распознано");
         }
 
         [TestMethod]

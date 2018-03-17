@@ -636,5 +636,19 @@ namespace SMLA
             SquareMatrix IA = new SquareMatrix(B);
             return IA;
         }
+
+        public static SquareMatrix InverseMatrixMRES(SquareMatrix A)
+        {
+            SquareMatrix E = SquareMatrix.GetUnitMatrix(A.GetN);
+            Vector[] B = new Vector[A.GetN];
+
+            for (int i = 0; i < A.GetN; i++)
+            {
+                B[i] = MRES(A, E.GetColumn(i), E.GetColumn(i));
+            }
+
+            SquareMatrix IA = new SquareMatrix(B);
+            return IA;
+        }
     }
 }

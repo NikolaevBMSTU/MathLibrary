@@ -14,6 +14,10 @@ namespace SMAN
         public static double[] Euler(double y0, double a, double b, int p, FunkXY D)
         // Method of Euler
         {
+            if (b <= a) { throw new ArgumentException("Отрезок интегрирования должен быть упорядочен"); }
+            if (p <= 0) { throw new ArgumentException("Количество точек должно быть более неотрицательным"); }
+            if (p < 2) { throw new ArgumentException("Слишком малое количество возвращаемых точек"); }
+
             int n = p;
             int n2 = 2 * (n - 1) + 1;
 
@@ -67,6 +71,10 @@ namespace SMAN
         public static double[] ImplicitEuler(double y0, double a, double b, int p, FunkXY D)
         // Method of Euler
         {
+            if (b <= a) { throw new ArgumentException("Отрезок интегрирования должен быть упорядочен"); }
+            if (p <= 0) { throw new ArgumentException("Количество точек должно быть более неотрицательным"); }
+            if (p < 2) { throw new ArgumentException("Слишком малое количество возвращаемых точек"); }
+
             int n = p;
             int n2 = 2 * (n - 1) + 1;
 
