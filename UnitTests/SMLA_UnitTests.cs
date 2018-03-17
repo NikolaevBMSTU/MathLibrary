@@ -34,7 +34,7 @@ namespace UnitTests
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Невозможно сложить вектора различной длины") actual = true;
             }
 
             Assert.IsTrue(actual);
@@ -64,7 +64,7 @@ namespace UnitTests
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Невозможно вычитать вектора различной длины") actual = true;
             }
 
             Assert.IsTrue(actual);
@@ -80,11 +80,78 @@ namespace UnitTests
             double actual = A * B;
             Assert.AreEqual(expected, actual, 0.01, "Scalar Multiplication not calculated correctly");
         }
+
+        [TestMethod]
+        public void ScalarMultiplicationDifferentVectorsTest()
+        {
+            Vector A = new Vector(12, 24, 0, 85, 33, 87, 1);
+            Vector B = new Vector(28, -4, 0, -23, 8, 17);
+
+            bool actual = false;
+            try
+            {
+                double ActualValue = A * B;
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Невозможно умножить вектора различной длины") actual = true;
+            }
+
+            Assert.IsTrue(actual);
+        }
     }
 
     [TestClass]
     public class MatrixClassTests
     {
+        [TestMethod]
+        public void CreateNegativDimensionMatrixTest()
+        {
+            bool actual = false;
+            try
+            {
+                Matrix ActualC = new Matrix(-1, -2);
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Размерности матрицы не могут быть отрицательными") actual = true;
+            }
+
+            Assert.IsTrue(actual, "Создана матрица с отрицательными размерностями");
+        }
+
+        [TestMethod]
+        public void CreateNegativN_MatrixTest()
+        {
+            bool actual = false;
+            try
+            {
+                Matrix ActualC = new Matrix(-1, 3);
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Размерности матрицы не могут быть отрицательными") actual = true;
+            }
+
+            Assert.IsTrue(actual, "Создана матрица с отрицательными n");
+        }
+
+        [TestMethod]
+        public void CreateNegativM_MatrixTest()
+        {
+            bool actual = false;
+            try
+            {
+                Matrix ActualC = new Matrix(1, -3);
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Размерности матрицы не могут быть отрицательными") actual = true;
+            }
+
+            Assert.IsTrue(actual, "Создана матрица с отрицательными m");
+        }
+
         [TestMethod]
         public void MultiplicationMatrix3x3Test()
         {
@@ -150,13 +217,13 @@ namespace UnitTests
         {
             double[,] a = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
             double[,] b = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
-            SquareMatrix A = new SquareMatrix(a);
-            SquareMatrix B = new SquareMatrix(b);
+            Matrix A = new Matrix(a);
+            Matrix B = new Matrix(b);
 
             double[,] expected = new double[3, 3] { { 16, 4, 8 }, { 8, 12, 16 }, { 14, 10, 20 } };
-            SquareMatrix ExpectedC = new SquareMatrix(expected);
+            Matrix ExpectedC = new Matrix(expected);
 
-            SquareMatrix ActualC = A + B;
+            Matrix ActualC = A + B;
 
             for (int i = 0; i < A.GetN; i++)
                 for (int j = 0; j < A.GetN; j++)
@@ -170,17 +237,17 @@ namespace UnitTests
         {
             double[,] a = new double[2, 2] { { 8, 2 }, { 4, 6 } };
             double[,] b = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
-            SquareMatrix A = new SquareMatrix(a);
-            SquareMatrix B = new SquareMatrix(b);
+            Matrix A = new Matrix(a);
+            Matrix B = new Matrix(b);
             bool actual = false;
 
             try
             {
-                SquareMatrix ActualC = A + B;
+                Matrix ActualC = A + B;
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Размерности матриц не совпадают") actual = true;
             }
 
             Assert.IsTrue(actual);
@@ -191,13 +258,13 @@ namespace UnitTests
         {
             double[,] a = new double[3, 3] { { 8, 2, 4 }, { 14, 26, 4 }, { 7, 5, 11 } };
             double[,] b = new double[3, 3] { { 10, 2, 1 }, { 4, 6, 8 }, { 7, 3, 10 } };
-            SquareMatrix A = new SquareMatrix(a);
-            SquareMatrix B = new SquareMatrix(b);
+            Matrix A = new Matrix(a);
+            Matrix B = new Matrix(b);
 
             double[,] expected = new double[3, 3] { { -2, 0, 3 }, { 10, 20, -4 }, { 0, 2, 1 } };
-            SquareMatrix ExpectedC = new SquareMatrix(expected);
+            Matrix ExpectedC = new Matrix(expected);
 
-            SquareMatrix ActualC = A - B;
+            Matrix ActualC = A - B;
 
             for (int i = 0; i < A.GetN; i++)
                 for (int j = 0; j < A.GetN; j++)
@@ -211,26 +278,76 @@ namespace UnitTests
         {
             double[,] a = new double[2, 2] { { 8, 2 }, { 4, 6 } };
             double[,] b = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
-            SquareMatrix A = new SquareMatrix(a);
-            SquareMatrix B = new SquareMatrix(b);
+            Matrix A = new Matrix(a);
+            Matrix B = new Matrix(b);
             bool actual = false;
 
             try
             {
-                SquareMatrix ActualC = A - B;
+                Matrix ActualC = A - B;
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Размерности матриц не совпадают") actual = true;
             }
 
             Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void TransposeMatrixTest()
+        {
+            double[,] a = new double[3, 3] { { 8, 2, 4 }, { 14, 26, 4 }, { 7, 5, 11 } };
+            Matrix A = new Matrix(a);
+
+            double[,] expected = new double[3, 3] { { 8, 14, 7 }, { 2, 26, 5 }, { 4, 4, 11 } };
+            Matrix ExpectedC = new Matrix(expected);
+
+            Matrix ActualC = Matrix.Transpose(A);
+
+            for (int i = 0; i < ExpectedC.GetN; i++)
+                for (int j = 0; j < ExpectedC.GetM; j++)
+                {
+                    Assert.AreEqual(ExpectedC.GetCell(i, j), ActualC.GetCell(i, j), 0.1, "Substract not calculated correctly");
+                }
         }
     }
 
     [TestClass]
     public class SquareMatrixClassTests
     {
+        [TestMethod]
+        public void CreateNegativDimensionMatrix()
+        {
+            bool actual = false;
+            try
+            {
+                SquareMatrix ActualC = new SquareMatrix(-1);
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Размерность матрицы не может быть отрицательной") actual = true;
+            }
+
+            Assert.IsTrue(actual, "Создана матрица отрицательной размерности");
+        }
+
+        [TestMethod]
+        public void CreateZeroDimensionMatrix()
+        {
+            bool actual = false;
+            try
+            {
+                SquareMatrix ActualC = new SquareMatrix(0);
+            }
+            catch (System.Exception e)
+            {
+                if (e.Message == "Размерность матрицы не может быть нулевой") actual = true;
+            }
+
+            Assert.IsTrue(actual, "Создана матрица нулевой размерности");
+        }
+
         [TestMethod]
         public void MultiplicationMatrixTest()
         {
@@ -249,7 +366,6 @@ namespace UnitTests
                 {
                     Assert.AreEqual(ExpectedC.GetArray[i, j], ActualC.GetArray[i, j], 0.1, "Multiplication not calculated correctly");
                 }
-                
         }
 
         [TestMethod]
@@ -287,7 +403,7 @@ namespace UnitTests
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Невозможно сложить матрицы различной размерности") actual = true;
             }
 
             Assert.IsTrue(actual);
@@ -338,15 +454,15 @@ namespace UnitTests
             double[,] b = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
             SquareMatrix A = new SquareMatrix(a);
             SquareMatrix B = new SquareMatrix(b);
-            bool actual = false;
 
+            bool actual = false;
             try
             {
                 SquareMatrix ActualC = A - B;
             }
             catch (System.Exception e)
             {
-                actual = true;
+                if (e.Message == "Невозможно вычесть матрицы различной длины") actual = true;
             }
 
             Assert.IsTrue(actual);

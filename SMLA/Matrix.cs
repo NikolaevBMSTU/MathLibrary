@@ -43,7 +43,6 @@ namespace Vectors
                 throw new System.ArgumentException("Невозможно сложить вектора различной длины");
             }
             else
-
             {
                 double[] temp = new double[A.GetLength];
                 for (int i = 0; i < A.GetLength; i++)
@@ -113,7 +112,7 @@ namespace Matrixs
         protected int n;
         private int m;
         public int GetN { get { return n; } }
-        private int GetM { get { return m; } }
+        public int GetM { get { return m; } }
 
         protected double[,] ArrayElements;
 
@@ -128,6 +127,9 @@ namespace Matrixs
 
         public Matrix(int N, int M)
         {
+            if (N < 0 || M < 0) { throw new ArgumentException("Размерности матрицы не могут быть отрицательными"); }
+            if (N == 0 || M == 0) { throw new ArgumentException("Размерности матрицы не могут быть нулевыми"); }
+
             n = N;
             m = M;
             ArrayElements = new double[n, m];
@@ -145,7 +147,37 @@ namespace Matrixs
                 }
         }
 
-        public Vector GetCell(int Numer)
+        public Matrix(Vector[] Colums)
+        {
+            bool NotError = true;
+            for (int i = 0; i < Colums.GetLength(0); i++)
+            {
+                NotError = NotError && (Colums[i].GetLength == Colums[0].GetLength);
+            }
+            if (!NotError) { throw new ArgumentException("Векторы должны быть одной длины"); }
+
+            n = Colums[0].GetLength;
+            m = Colums.GetLength(0);
+
+            ArrayElements = new double[n, m];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    ArrayElements[i, j] = Colums[j].GetVector[i];
+                }
+            }
+        }
+
+        public double GetCell(int N, int M)
+        {
+            if (N < 0 || M < 0) { throw new ArgumentException("Номер ячейки матрицы не может быть отрицательным"); }
+            if (N >= n || M >= m) { throw new ArgumentException("Номер ячейки превышает размерность матрицы"); }
+
+            return ArrayElements[N, M];
+        }
+
+        public Vector GetColumn(int Numer)
         {
             if (Numer >= m)
             {
@@ -179,6 +211,64 @@ namespace Matrixs
             }
         }
 
+        public static Matrix Transpose(Matrix A)
+        {
+            Vector[] Rows = new Vector[A.GetN];
+
+            for (int i = 0; i < A.GetN; i++)
+            {
+                Rows[i] = A.GetRow(i);
+            }
+
+            Matrix B = new Matrix(Rows);
+
+            return B;
+        }
+
+        public static Matrix operator +(Matrix A, Matrix B)
+        {
+            if (A.GetN != B.GetM || A.GetM != B.GetN)
+            {
+                throw new System.ArgumentException("Размерности матриц не совпадают");
+            }
+            else
+            {
+                int n = A.GetN;
+                int m = B.GetM;
+
+                double[,] Y = new double[n, m];
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                    {
+                        Y[i, j] = A.GetCell(i, j) + B.GetCell(i, j);
+                    }
+
+                return new Matrix(Y);
+            }
+        }
+
+        public static Matrix operator -(Matrix A, Matrix B)
+        {
+            if (A.GetN != B.GetM || A.GetM != B.GetN)
+            {
+                throw new System.ArgumentException("Размерности матриц не совпадают");
+            }
+            else
+            {
+                int n = A.GetN;
+                int m = B.GetM;
+
+                double[,] Y = new double[n, m];
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                    {
+                        Y[i, j] = A.GetCell(i, j) - B.GetCell(i, j);
+                    }
+
+                return new Matrix(Y);
+            }
+        }
+
         public static Matrix operator *(Matrix A, Matrix B)
         {
             if (A.GetN != B.GetM || A.GetM != B.GetN)
@@ -194,7 +284,7 @@ namespace Matrixs
                 for (int i = 0; i < n; i++)
                     for (int j = 0; j < n; j++)
                     {
-                        Y[i, j] = A.GetRow(i) * B.GetCell(j); ;
+                        Y[i, j] = A.GetRow(i) * B.GetColumn(j); ;
                     }
 
                 return new Matrix(Y);
@@ -212,6 +302,9 @@ namespace Matrixs
 
         public SquareMatrix(int N)
         {
+            if (N < 0) { throw new ArgumentException("Размерность матрицы не может быть отрицательной"); }
+            if (N == 0) { throw new ArgumentException("Размерность матрицы не может быть нулевой"); }
+
             n = N;
             ArrayElements = new double[n, n];
         }
@@ -245,12 +338,20 @@ namespace Matrixs
             {
                 for (int j = 0; j < n; j++)
                 {
-                    ArrayElements[j, i] = Colums[i].GetVector[j];
+                    ArrayElements[i, j] = Colums[j].GetVector[i];
                 }
             }
         }
 
-        public Vector GetColumn(int Numer)
+        public new double GetCell(int N, int M)
+        {
+            if (N < 0 || M < 0) { throw new ArgumentException("Номер ячейки матрицы не может быть отрицательным"); }
+            if (N >= n || M >= n) { throw new ArgumentException("Номер ячейки превышает размерность матрицы"); }
+
+            return ArrayElements[N, M];
+        }
+
+        public new Vector GetColumn(int Numer)
         {
             if (Numer >= n)
             {
@@ -267,7 +368,7 @@ namespace Matrixs
             }
         }
 
-        public Vector GetRow(int Numer)
+        public new Vector GetRow(int Numer)
         {
             if (Numer >= n)
             {
