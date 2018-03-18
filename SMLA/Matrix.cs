@@ -106,13 +106,12 @@ namespace Vectors
 
 namespace Matrixs
 {
-    
     public class Matrix
     {
         protected int n;
         private int m;
         public int GetN { get { return n; } }
-        public int GetM { get { return m; } }
+        virtual public int GetM { get { return m; } }
 
         protected double[,] ArrayElements;
 
@@ -293,7 +292,9 @@ namespace Matrixs
     }
 
     public class SquareMatrix : Matrix
-    {      
+    {
+        public new int GetM { get { return n; } }  // Скрытие неиспользуемого наследуемого члена
+
         public SquareMatrix()
         {
             n = 0;

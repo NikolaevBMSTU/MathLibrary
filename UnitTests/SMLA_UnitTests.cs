@@ -375,7 +375,7 @@ namespace UnitTests
             double[,] b = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
             SquareMatrix A = new SquareMatrix(a);
             SquareMatrix B = new SquareMatrix(b);
-
+            
             double[,] expected = new double[3, 3] { { 16, 4, 8 }, { 8, 12, 16 }, { 14, 10, 20 } };
             SquareMatrix ExpectedC = new SquareMatrix(expected);
 
