@@ -1,5 +1,11 @@
 using System;
 
+/*********************************  
+* Автор: Николаев Виталий
+* 
+* Версия: 1.0
+*    
+**********************************/
 
 //Compiler version 4.0, .NET Framework 4.5
 // есть лишнее повторение, когда требуется удвоить шаг
@@ -12,7 +18,7 @@ namespace SMAN
         public delegate double FunkXY(double x, double y);
 
         public static double[] Euler(double y0, double a, double b, int p, FunkXY D)
-        // Method of Euler
+        // Явный метод Эйлера первого порядка точности
         {
             if (b <= a) { throw new ArgumentException("Отрезок интегрирования должен быть упорядочен"); }
             if (p <= 0) { throw new ArgumentException("Количество точек должно быть более неотрицательным"); }
@@ -68,11 +74,13 @@ namespace SMAN
             return answer;
         }
 
-        public static double[] ImplicitEuler(double y0, double a, double b, int p, FunkXY D)
-        // Method of Euler
+        public static double[] PCEuler(double y0, double a, double b, int p, FunkXY D)
+        // Predictor–corrector method Euler
+        // Модифицированный метод Эйлера (предиктор - корректор)
         {
-            if (b <= a) { throw new ArgumentException("Отрезок интегрирования должен быть упорядочен"); }
-            if (p <= 0) { throw new ArgumentException("Количество точек должно быть более неотрицательным"); }
+            if (b < a) { throw new ArgumentException("Отрезок интегрирования должен быть упорядочен"); }
+            if (b == a) { throw new ArgumentException("Пределы интегрирования не должны совпадать"); }
+            if (p <= 0) { throw new ArgumentException("Количество точек должно быть неотрицательным"); }
             if (p < 2) { throw new ArgumentException("Слишком малое количество возвращаемых точек"); }
 
             int n = p;
@@ -125,6 +133,18 @@ namespace SMAN
             }
 
             return answer;
+        }
+
+        public double[] Adams(double y0, double a, double b, int p, FunkXY D)
+        {
+            double[] с = new double[p];
+            return с;
+        }
+
+        public double[] BDF(double y0, double a, double b, int p, FunkXY D)
+        {
+            double[] с = new double[p];
+            return с;
         }
     }
 

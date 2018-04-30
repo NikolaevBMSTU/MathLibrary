@@ -26,7 +26,6 @@ namespace AllLibrary
             double[] c = ODE.Euler(0, 0, 1, 10, funXY);
             double[,] A = new double[3, 3] { { 8, 2, 4 }, { 4, 6, 8 }, { 7, 5, 10 } };
             SquareMatrix MatrixA = new SquareMatrix(A);
-            int tst = MatrixA.GetM;
             SquareMatrix Actual = MatrixA * SLEQ.InverseMatrixBiCGStab(MatrixA);
         }
     }

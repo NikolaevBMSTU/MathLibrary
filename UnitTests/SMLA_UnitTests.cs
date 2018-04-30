@@ -443,7 +443,7 @@ namespace UnitTests
             for (int i = 0; i < A.GetN; i++)
                 for (int j = 0; j < A.GetN; j++)
                 {
-                    Assert.AreEqual(ExpectedC.GetArray[i, j], ActualC.GetArray[i, j], 0.1, "Inverse matrix not calculated correctly");
+                    Assert.AreEqual(ExpectedC.GetArray[i, j], ActualC.GetArray[i, j], 0.001, "Вычисление обратной матрицы выполнено неправильно");
                 }
         }
 
@@ -477,6 +477,24 @@ namespace UnitTests
             double expected = 18.143;
             double actual = SquareMatrix.GetMaxEigenvalue(A, 0.01);
             Assert.AreEqual(expected, actual, 0.01, "Max eigenvalue not calculated correctly");
+        }
+
+        [TestMethod]
+        public void TransposeMatrixTest()
+        {
+            double[,] a = new double[3, 3] { { 8, 2, 4 }, { 14, 26, 4 }, { 7, 5, 11 } };
+            SquareMatrix A = new SquareMatrix(a);
+
+            double[,] expected = new double[3, 3] { { 8, 14, 7 }, { 2, 26, 5 }, { 4, 4, 11 } };
+            SquareMatrix ExpectedC = new SquareMatrix(expected);
+
+            SquareMatrix ActualC = SquareMatrix.Transpose(A);
+
+            for (int i = 0; i < ExpectedC.GetN; i++)
+                for (int j = 0; j < ExpectedC.GetN; j++)
+                {
+                    Assert.AreEqual(ExpectedC.GetCell(i, j), ActualC.GetCell(i, j), 0.1, "Substract not calculated correctly");
+                }
         }
 
         [TestMethod]

@@ -106,16 +106,368 @@ namespace Vectors
 
 namespace Matrixs
 {
-    public class Matrix
+    public class SquareMatrix
     {
         protected int n;
-        private int m;
-        public int GetN { get { return n; } }
-        virtual public int GetM { get { return m; } }
-
         protected double[,] ArrayElements;
 
+        public int GetN { get { return n; } }
         public double[,] GetArray { get { return ArrayElements; } }
+
+        public SquareMatrix()
+        {
+            n = 0;
+            ArrayElements = new double[n, n];
+        }
+
+        public SquareMatrix(int N)
+        {
+            if (N < 0) { throw new ArgumentException("Размерность матрицы не может быть отрицательной"); }
+            if (N == 0) { throw new ArgumentException("Размерность матрицы не может быть нулевой"); }
+
+            n = N;
+            ArrayElements = new double[n, n];
+        }
+
+        public SquareMatrix(double[,] a)
+        {
+            n = a.GetLength(0);
+            if (n != a.GetLength(1)) { throw new ArgumentException("Массив должен быть квадратным"); }
+            ArrayElements = new double[n, n];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    ArrayElements[i, j] = a[i, j];
+                }
+        }
+
+        public SquareMatrix(Vector[] Colums)
+        {
+            bool NotError = true;
+            for (int i = 0; i < Colums.GetLength(0); i++)
+            {
+                NotError = NotError && (Colums[i].GetLength == Colums[0].GetLength);
+            }
+            if (!NotError) { throw new ArgumentException("Векторы должны быть одной длины"); }
+
+            if (Colums.GetLength(0) != Colums[0].GetLength) { throw new ArgumentException("Количество векторов не соответствует их длине"); }
+
+            n = Colums[0].GetLength;
+            ArrayElements = new double[n, n];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    ArrayElements[i, j] = Colums[j].GetVector[i];
+                }
+            }
+        }
+
+        public double GetCell(int N, int M)
+        {
+            if (N < 0 || M < 0) { throw new ArgumentException("Номер ячейки матрицы не может быть отрицательным"); }
+            if (N >= n || M >= n) { throw new ArgumentException("Номер ячейки превышает размерность матрицы"); }
+
+            return ArrayElements[N, M];
+        }
+
+        public Vector GetColumn(int Numer)
+        {
+            if (Numer >= n)
+            {
+                throw new System.ArgumentException("Номер столбца превышает размерность матрицы");
+            }
+            else
+            {
+                double[] B = new double[n];
+                for (int i = 0; i < n; i++)
+                {
+                    B[i] = ArrayElements[i, Numer];
+                }
+                return new Vector(B);
+            }
+        }
+
+        public Vector GetRow(int Numer)
+        {
+            if (Numer >= n)
+            {
+                throw new System.ArgumentException("Номер строки превышает размерность матрицы");
+            }
+            else
+            {
+                double[] B = new double[n];
+                for (int i = 0; i < n; i++)
+                {
+                    B[i] = ArrayElements[Numer, i];
+                }
+                return new Vector(B);
+            }
+        }
+
+        public static SquareMatrix Transpose(SquareMatrix A)
+        {
+            Vector[] Rows = new Vector[A.GetN];
+
+            for (int i = 0; i < A.GetN; i++)
+            {
+                Rows[i] = A.GetRow(i);
+            }
+
+            SquareMatrix B = new SquareMatrix(Rows);
+
+            return B;
+        }
+
+        public static SquareMatrix operator *(SquareMatrix A, SquareMatrix B)
+        {
+            if (A.GetN != B.GetN)
+            {
+                throw new System.ArgumentException("Невозможно умножить матрицы различной длины");
+            }
+            else
+            {
+                int n = A.GetN;
+                double[,] C = new double[n, n];
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        C[i, j] = 0;
+                        for (int k = 0; k < n; k++)
+                        {
+                            C[i, j] += A.GetArray[i, k] * B.GetArray[k, j];
+                        }
+                    }
+                }
+                return new SquareMatrix(C);
+            }
+        }
+
+        public static Vector operator *(SquareMatrix A, Vector X)
+        {
+            if (A.GetN != X.GetLength)
+            {
+                throw new System.ArgumentException("Невозможно умножить матрицу и вектор различной длины");
+            }
+            else
+            {
+                int n = A.GetN;
+                double[] Y = new double[n];
+                for (int i = 0; i < n; i++)
+                {
+                    Y[i] = 0;
+                    for (int j = 0; j < n; j++)
+                    {
+                        Y[i] += A.GetArray[i, j] * X.GetVector[j];
+                    }
+                }
+                return new Vector(Y);
+            }
+        }
+
+        public static SquareMatrix operator *(double b, SquareMatrix A)
+        {
+            int n = A.GetN;
+            double[,] Y = new double[n, n];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    Y[i, j] = A.GetArray[i, j] * b;
+                }
+
+            return new SquareMatrix(Y);
+        }
+
+        public static SquareMatrix operator *(SquareMatrix A, double b)
+        {
+            int n = A.GetN;
+            double[,] Y = new double[n, n];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    Y[i, j] = A.GetArray[i, j] * b;
+                }
+
+            return new SquareMatrix(Y);
+        }
+
+        public static SquareMatrix operator +(SquareMatrix A, SquareMatrix B)
+        {
+            if (A.GetN != B.GetN)
+            {
+                throw new System.ArgumentException("Невозможно сложить матрицы различной размерности");
+            }
+            else
+            {
+                int n = A.GetN;
+                double[,] Y = new double[n, n];
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                    {
+                        Y[i, j] = A.GetArray[i, j] + B.GetArray[i, j];
+                    }
+
+                return new SquareMatrix(Y);
+            }
+        }
+
+        public static SquareMatrix operator -(SquareMatrix A, SquareMatrix B)
+        {
+            if (A.GetN != B.GetN)
+            {
+                throw new System.ArgumentException("Невозможно вычесть матрицы различной длины");
+            }
+            else
+            {
+                int n = A.GetN;
+                double[,] Y = new double[n, n];
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                    {
+                        Y[i, j] = A.GetArray[i, j] - B.GetArray[i, j];
+                    }
+
+                return new SquareMatrix(Y);
+            }
+        }
+
+        public static SquareMatrix GetUnitMatrix(int n)
+        {
+            double[,] Y = new double[n, n];
+            for (int i = 0; i < n; i++)
+                Y[i, i] = 1;
+            return new SquareMatrix(Y);
+        }
+
+        public SquareMatrix GetInverseMatrix()
+        {
+            double[,] I = GetUnitMatrix(n).GetArray;
+            double[,] B = new double[n, n];
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    B[i, j] = ArrayElements[i, j];
+                }
+            }
+
+            for (int k = 0; k < n; k++)
+            {
+                double Bkk = B[k, k];
+                for (int j = n - 1; j >= 0; j--)
+                {
+                    I[k, j] = I[k, j] / Bkk;
+                    B[k, j] = B[k, j] / Bkk;
+                }
+                for (int i = k + 1; i < n; i++)
+                {
+                    double Bik = B[i, k];
+                    for (int j = 0; j < n; j++)
+                    {
+                        I[i, j] = I[i, j] - I[k, j] * Bik;
+                        B[i, j] = B[i, j] - B[k, j] * Bik;
+                    }
+                }
+            }
+
+            for (int k = n - 1; k >= 0; k--)
+            {
+                for (int i = 0; i < k; i++)
+                {
+                    double Bik = B[i, k];
+                    for (int j = 0; j < n; j++)
+                    {
+                        I[i, j] = I[i, j] - I[k, j] * Bik;
+                        B[i, j] = B[i, j] - B[k, j] * Bik;
+                    }
+                }
+            }
+
+            return new SquareMatrix(I);
+        }
+
+        public void ILU(out SquareMatrix L, out SquareMatrix U, out SquareMatrix R)
+        {
+            double[,] l = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
+            double[,] u = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
+
+            for (int i = 0; i < ArrayElements.GetLength(0); i++)
+                for (int j = 0; j < ArrayElements.GetLength(1); j++)
+                {
+                    l[i, j] = 0/*A[i, j]*/;
+                    u[i, j] = 0/*A[i, j]*/;
+                }
+
+            //R = new SquareMatrix(A.GetArray);
+
+            for (int k = 0; k < n; k++)
+            {
+                for (int j = 0; j < k - 1; j++)
+                {
+                    if (ArrayElements[k, j] == 0) { l[k, j] = 0; }
+                    else
+                    {
+                        double summ = 0;
+                        for (int i = 0; i < j - 1; i++)
+                            summ += l[k, i] * u[i, j];
+                        l[k, j] = (ArrayElements[k, j] - summ) / u[j, j];
+                    }
+                }
+                l[k, k] = 1;
+                for (int j = k; j < n; j++)
+                {
+                    if (ArrayElements[k, j] == 0) { u[k, j] = 0; }
+                    else
+                    {
+                        double summ = 0;
+                        for (int i = 0; i < k - 1; i++)
+                            summ += l[k, i] * u[i, j];
+                        u[k, j] = ArrayElements[k, j] - summ;
+                    }
+                }
+            }
+
+            L = new SquareMatrix(l);
+            U = new SquareMatrix(u);
+            R = new SquareMatrix(ArrayElements) - L * U;
+        }
+
+        public static double GetMaxEigenvalue(SquareMatrix A, double eps)
+        {
+            double[] x0 = new double[A.GetN];
+            for (int i = 0; i < x0.GetLength(0); i++) x0[i] = 1;
+
+            double Lambda = new double();
+            double NextLambda = new double();
+            Vector X = new Vector(x0);
+            Vector NextX = new Vector(x0);
+
+            bool end = false;
+            while (!end)
+            {
+                X = NextX;
+                Lambda = NextLambda;
+                NextX = A * X;
+                NextLambda = NextX.GetVector[0] / X.GetVector[0];
+
+                if (Math.Abs(NextLambda - Lambda) < eps) { end = true; }
+            }
+
+            return NextLambda;
+        }
+
+    }
+
+    public class Matrix : SquareMatrix
+    {
+        
+        protected int m;
+        
+        public int GetM { get { return m; } }
+
+        
 
         public Matrix()
         {
@@ -168,7 +520,7 @@ namespace Matrixs
             }
         }
 
-        public double GetCell(int N, int M)
+        public new double GetCell(int N, int M)
         {
             if (N < 0 || M < 0) { throw new ArgumentException("Номер ячейки матрицы не может быть отрицательным"); }
             if (N >= n || M >= m) { throw new ArgumentException("Номер ячейки превышает размерность матрицы"); }
@@ -176,7 +528,7 @@ namespace Matrixs
             return ArrayElements[N, M];
         }
 
-        public Vector GetColumn(int Numer)
+        public new Vector GetColumn(int Numer)
         {
             if (Numer >= m)
             {
@@ -193,7 +545,7 @@ namespace Matrixs
             }
         }
 
-        public Vector GetRow(int Numer)
+        public new Vector GetRow(int Numer)
         {
             if (Numer >= n)
             {
@@ -291,341 +643,7 @@ namespace Matrixs
         }
     }
 
-    public class SquareMatrix : Matrix
-    {
-        public new int GetM { get { return n; } }  // Скрытие неиспользуемого наследуемого члена
-
-        public SquareMatrix()
-        {
-            n = 0;
-            ArrayElements = new double[n, n];
-        }
-
-        public SquareMatrix(int N)
-        {
-            if (N < 0) { throw new ArgumentException("Размерность матрицы не может быть отрицательной"); }
-            if (N == 0) { throw new ArgumentException("Размерность матрицы не может быть нулевой"); }
-
-            n = N;
-            ArrayElements = new double[n, n];
-        }
-
-        public SquareMatrix(double[,] a)
-        {
-            n = a.GetLength(0);
-            if (n != a.GetLength(1)) { throw new ArgumentException("Массив должен быть квадратным"); }
-            ArrayElements = new double[n, n];
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                {
-                    ArrayElements[i, j] = a[i, j];
-                }
-        }
-
-        public SquareMatrix(Vector[] Colums)
-        {
-            bool NotError = true;
-            for (int i = 0; i < Colums.GetLength(0); i++)
-            {
-                NotError = NotError && (Colums[i].GetLength == Colums[0].GetLength);
-            }
-            if (!NotError) { throw new ArgumentException("Векторы должны быть одной длины"); }
-
-            if (Colums.GetLength(0) != Colums[0].GetLength) { throw new ArgumentException("Количество векторов не соответствует их длине"); }
-
-            n = Colums[0].GetLength;
-            ArrayElements = new double[n, n];
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    ArrayElements[i, j] = Colums[j].GetVector[i];
-                }
-            }
-        }
-
-        public new double GetCell(int N, int M)
-        {
-            if (N < 0 || M < 0) { throw new ArgumentException("Номер ячейки матрицы не может быть отрицательным"); }
-            if (N >= n || M >= n) { throw new ArgumentException("Номер ячейки превышает размерность матрицы"); }
-
-            return ArrayElements[N, M];
-        }
-
-        public new Vector GetColumn(int Numer)
-        {
-            if (Numer >= n)
-            {
-                throw new System.ArgumentException("Номер столбца превышает размерность матрицы");
-            }
-            else
-            {
-                double[] B = new double[n];
-                for (int i = 0; i < n; i++)
-                {
-                    B[i] = ArrayElements[i, Numer];
-                }
-                return new Vector(B);
-            }
-        }
-
-        public new Vector GetRow(int Numer)
-        {
-            if (Numer >= n)
-            {
-                throw new System.ArgumentException("Номер строки превышает размерность матрицы");
-            }
-            else
-            {
-                double[] B = new double[n];
-                for (int i = 0; i < n; i++)
-                {
-                    B[i] = ArrayElements[Numer, i];
-                }
-                return new Vector(B);
-            }
-        }
-
-        public static SquareMatrix operator *(SquareMatrix A, SquareMatrix B)
-        {
-            if (A.GetN != B.GetN)
-            {
-                throw new System.ArgumentException("Невозможно умножить матрицы различной длины");
-            }
-            else
-            {
-                int n = A.GetN;
-                double[,] C = new double[n, n];
-                for (int i = 0; i < n; i++)
-                {
-                    for (int j = 0; j < n; j++)
-                    {
-                        C[i, j] = 0;
-                        for (int k = 0; k < n; k++)
-                        {
-                            C[i, j] += A.GetArray[i, k] * B.GetArray[k, j];
-                        }
-                    }
-                }
-                return new SquareMatrix(C);
-            }
-        }
-
-        public static Vector operator *(SquareMatrix A, Vector X)
-        {
-            if (A.GetN != X.GetLength)
-            {
-                throw new System.ArgumentException("Невозможно умножить матрицу и вектор различной длины");
-            }
-            else
-            {
-                int n = A.GetN;
-                double[] Y = new double[n];
-                for (int i = 0; i < n; i++)
-                {
-                    Y[i] = 0;
-                    for (int j = 0; j < n; j++)
-                    {
-                        Y[i] += A.GetArray[i, j] * X.GetVector[j];
-                    }
-                }
-                return new Vector(Y);
-            }   
-        }
-
-        public static SquareMatrix operator *(double b, SquareMatrix A)
-        {
-            int n = A.GetN;
-            double[,] Y = new double[n,n];
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                {
-                    Y[i, j] = A.GetArray[i, j] * b;
-                }
-            
-            return new SquareMatrix(Y);
-        }
-
-        public static SquareMatrix operator *(SquareMatrix A, double b)
-        {
-            int n = A.GetN;
-            double[,] Y = new double[n, n];
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                {
-                    Y[i, j] = A.GetArray[i, j] * b;
-                }
-
-            return new SquareMatrix(Y);
-        }
-
-        public static SquareMatrix operator +(SquareMatrix A, SquareMatrix B)
-        {
-            if (A.GetN != B.GetN)
-            {
-                throw new System.ArgumentException("Невозможно сложить матрицы различной размерности");
-            }
-            else
-            {
-                int n = A.GetN;
-                double[,] Y = new double[n, n];
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < n; j++)
-                    {
-                        Y[i, j] = A.GetArray[i, j] + B.GetArray[i, j];
-                    }
-
-                return new SquareMatrix(Y);
-            }
-        }
-
-        public static SquareMatrix operator -(SquareMatrix A, SquareMatrix B)
-        {
-            if (A.GetN != B.GetN)
-            {
-                throw new System.ArgumentException("Невозможно вычесть матрицы различной длины");
-            }
-            else
-            {
-                int n = A.GetN;
-                double[,] Y = new double[n, n];
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < n; j++)
-                    {
-                        Y[i, j] = A.GetArray[i, j] - B.GetArray[i, j];
-                    }
-
-                return new SquareMatrix(Y);
-            }
-        }
-
-        public static SquareMatrix GetUnitMatrix(int n)
-        {
-            double[,] Y = new double[n, n];
-            for (int i = 0; i < n; i++)
-                Y[i, i] = 1;
-            return new SquareMatrix(Y);
-        }
-
-        public SquareMatrix GetInverseMatrix()
-        {
-            double[,] I = GetUnitMatrix(n).GetArray;
-            double[,] B = new double[n, n];
-
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    B[i, j] = ArrayElements[i, j];
-                }
-            }
-
-            for (int k = 0; k < n; k++)
-            {
-                double Bkk = B[k, k];
-                for (int j = n - 1; j >= 0; j--)
-                {
-                    I[k, j] = I[k, j] / Bkk;
-                    B[k, j] = B[k, j] / Bkk;
-                }
-                for (int i = k + 1; i < n; i++)
-                {
-                    double Bik = B[i, k];
-                    for (int j = 0; j < n; j++)
-                    {
-                        I[i, j] = I[i, j] - I[k, j] * Bik;
-                        B[i, j] = B[i, j] - B[k, j] * Bik;
-                    }
-                }
-            }
-
-            for (int k = n-1; k >= 0; k--)
-            {
-                for (int i = 0; i < k; i++)
-                {
-                    double Bik = B[i, k];
-                    for (int j = 0; j < n; j++)
-                    {
-                        I[i, j] = I[i, j] - I[k, j] * Bik;
-                        B[i, j] = B[i, j] - B[k, j] * Bik;
-                    }
-                }
-            }
-
-            return new SquareMatrix(I);
-        }
-
-        public void ILU(out SquareMatrix L, out SquareMatrix U, out SquareMatrix R)
-        {
-            double[,] l = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
-            double[,] u = new double[ArrayElements.GetLength(0), ArrayElements.GetLength(1)];
-
-            for (int i = 0; i < ArrayElements.GetLength(0); i++)
-                for (int j = 0; j < ArrayElements.GetLength(1); j++)
-                {
-                    l[i, j] = 0/*A[i, j]*/;
-                    u[i, j] = 0/*A[i, j]*/;
-                }
-
-            //R = new SquareMatrix(A.GetArray);
-
-            for (int k = 0; k < n; k++)
-            {
-                for (int j = 0; j < k - 1; j++)
-                {
-                    if (ArrayElements[k, j] == 0) { l[k, j] = 0; }
-                    else
-                    {
-                        double summ = 0;
-                        for (int i = 0; i < j - 1; i++)
-                            summ += l[k, i] * u[i, j];
-                        l[k, j] = (ArrayElements[k, j] - summ) / u[j, j];
-                    }
-                }
-                l[k, k] = 1;
-                for (int j = k; j < n; j++)
-                {
-                    if (ArrayElements[k, j] == 0) { u[k, j] = 0; }
-                    else
-                    {
-                        double summ = 0;
-                        for (int i = 0; i < k - 1; i++)
-                            summ += l[k, i] * u[i, j];
-                        u[k, j] = ArrayElements[k, j] - summ;
-                    }
-                }
-            }
-
-            L = new SquareMatrix(l);
-            U = new SquareMatrix(u);
-            R = new SquareMatrix(ArrayElements) - L * U;
-        }
-
-        public static double GetMaxEigenvalue(SquareMatrix A, double eps)
-        {
-            double[] x0 = new double[A.GetN];
-            for (int i = 0; i < x0.GetLength(0); i++) x0[i] = 1;
-
-            double Lambda = new double();
-            double NextLambda = new double();
-            Vector X = new Vector(x0);
-            Vector NextX = new Vector(x0);
-
-            bool end = false;
-            while (!end)
-            {
-                X = NextX;
-                Lambda = NextLambda;
-                NextX = A * X;
-                NextLambda = NextX.GetVector[0] / X.GetVector[0];
-
-                if (Math.Abs(NextLambda - Lambda) < eps) { end = true; }
-            }
-
-            return NextLambda;
-        }
-
-    }
+   
 
 }
 
