@@ -2,6 +2,47 @@
 using Vectors;
 using Matrixs;
 
+namespace Scalar
+{
+    public class SCA
+    {
+        protected double x;
+        protected double D; //Delta
+
+        public double Value { get { return x; } }
+        public double Delta { get { return D; } }
+
+        public SCA()
+        {
+            x = 0;
+            D = 0;
+        }
+
+        public SCA(double X)
+        {
+            x = X;
+            D = 0;
+        }
+
+        public SCA(double X, double Delta)
+        {
+            x = X;
+            D = Delta;
+        }
+
+        public static SCA operator +(SCA A, SCA B)
+        {
+            SCA C = new SCA(A.x + B.x, A.D + B.D);
+            return C;
+        }
+
+        public static implicit operator double(SCA A)
+        {
+            return A.x;
+        }
+
+    }
+}
 
 namespace Vectors
 {

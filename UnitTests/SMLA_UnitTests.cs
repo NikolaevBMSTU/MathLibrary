@@ -1,4 +1,5 @@
 ﻿using System;
+using Scalar;
 using Vectors;
 using Matrixs;
 using SMLA;
@@ -6,6 +7,40 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests
 {
+    [TestClass]
+    public class SCAClassTests
+    {
+        [TestMethod]
+        public void SummScalarTest()
+        {
+            SCA A = new SCA(12, 0.0001);
+            SCA B = new SCA(1, 0.1);
+            SCA C = A + B;
+
+            double ExpectedValue = 13;
+            double ActualValue = C.Value;
+
+            double ExpectedAccuracy = 0.1001;
+            double ActualAccuracy = C.Delta;
+
+            Assert.AreEqual(ExpectedValue, ActualValue, 0.00001, "Значение выражения вычисляется неверно");
+            Assert.AreEqual(ExpectedAccuracy, ActualAccuracy, 0.00001, "Погрешность выражения вычисляется неверно");
+        }
+                
+        [TestMethod]
+        public void ReductionOfTypeScalarTest()
+        {
+            SCA A = new SCA(12, 0.0001);
+            double B = 10;
+            double C = A + B;
+
+            double ExpectedValue = 22;
+            double ActualValue = C;
+
+            Assert.AreEqual(ExpectedValue, ActualValue, 0.00001, "Значение выражения вычисляется неверно");
+        }
+    }
+
     [TestClass]
     public class VectorsClassTests
     {
