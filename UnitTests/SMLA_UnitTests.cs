@@ -498,6 +498,21 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void IsSymmetryMatrixTest()
+        {
+            double[,] a = new double[3, 3] { { 8, 2, 4 }, { 2, 26, 1 }, { 4, 1, 11 } };
+            double[,] b = new double[3, 3] { { 8, 2, 4 }, { 14, 26, 4 }, { 7, 5, 11 } };
+            SquareMatrix A = new SquareMatrix(a);
+            SquareMatrix B = new SquareMatrix(b);
+
+            bool ActualSymmetryA = A.IsSymmetry();
+            Assert.AreEqual(true, ActualSymmetryA, "Симметричная матрица не распознана");
+
+            bool ActualSymmetryB = B.IsSymmetry();
+            Assert.AreEqual(false, ActualSymmetryB, "Несимметричная матрица не распознана");
+        }
+
+        [TestMethod]
         public void ILU_Test()
         {
             double[,] a = new double[7, 7] { { 9, 0, 0, 3, 1, 0, 1 }, { 0, 11, 2, 1, 0, 0, 2 }, { 0, 1, 10, 2, 0, 0, 0 }, { 2, 1, 2, 9, 1, 0, 0 }, { 1, 0, 0, 1, 12, 0, 1 }, { 0, 0, 0, 0, 0, 8, 0 }, { 2, 2, 0, 0, 3, 0, 8 } };

@@ -434,6 +434,17 @@ namespace Matrixs
             R = new SquareMatrix(ArrayElements) - L * U;
         }
 
+        public bool IsSymmetry()
+        {
+            bool Symmetry = true;
+            for (int i = 0; i < n; i++)
+                for (int j = i; j < n; j++)
+                {
+                    Symmetry = Symmetry & (ArrayElements[i, j] == ArrayElements[j, i]);
+                }
+            return Symmetry;
+        }
+
         public static double GetMaxEigenvalue(SquareMatrix A, double eps)
         {
             double[] x0 = new double[A.GetN];
